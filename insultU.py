@@ -10,7 +10,7 @@ face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 )
 smile_cascade = cv2.CascadeClassifier(
-    "C:/Users/tyagi/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/cv2/data/haarcascade_smile.xml"
+    cv2.data.haarcascades + "haarcascade_smile.xml"
 )
 
 
@@ -29,9 +29,17 @@ class insult_smile:
     insult_count=0
 
     #Function to fetch random insults
+    def get_daily_insult():
+        URL = "https://quotes.rest/qod?language=en"
+        try:
+            response = requests.get(URL)
+        except:
+            return random.choice(curselist.insults)
+        res = json.loads(response.text)
+        return res['insult']
+    
     def curse(self):
-        speak.Speak(random.choice(curselist.insults))
-
+        speak.Speak(get_daily_insult())
 
     #Function to detect face and smile
     def insult(self):
@@ -58,7 +66,7 @@ class insult_smile:
                     if threading.active_count() < 5 :
                         #start insulting when smile detected
                         self.insult_count+=1
-                        print("Here Comes insult",self.insult_count)
+                        print("Here Comes the insult",self.insult_count)
                         c = threading.Thread(target=self.curse)
                         c.start()
                 
